@@ -400,7 +400,7 @@ export function InterviewConfigForm({
                     <FormLabel>ナレッジソース</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="議案の詳細情報やチームみらいの仮説などの情報を入力"
+                        placeholder="議案の詳細情報や独自の仮説などの情報を入力"
                         className="min-h-[200px] resize-y"
                         {...field}
                       />

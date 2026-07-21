@@ -9,8 +9,9 @@ https://mirai-gikai-kawasaki-web.vercel.app/
   党公式ではなく[GondoTakashi](https://x.com/TakashiGondo)にご連絡ください。
 
 ## 他地方議会向けForkガイド
-- 他の市議会・県議会等のバージョンを作成したい場合は、  
-  以下のドキュメントを参考にすると早いと思います  
+- 他の市議会・県議会等のバージョンを作成したい場合は、まず以下のガイドラインをご確認ください：
+  [Forkガイドライン](FORK_GUIDELINES.md)
+- その上で、以下のドキュメントを参考にすると早いと思います：
   [fork手順](docs/kawasaki/20260304_1000_別地域向けfork手順.md)
 
 ---
