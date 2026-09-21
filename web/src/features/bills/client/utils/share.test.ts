@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { siteConfig } from "@/config/site.config";
 import type { BillWithContent } from "../../shared/types";
 import { createBillShareUrl, createShareMessage } from "./share";
 
@@ -21,6 +22,7 @@ describe("createBillShareUrl", () => {
 });
 
 describe("createShareMessage", () => {
+  const hashtag = `#${siteConfig.twitterHashtag}`;
   const baseBill = {
     id: "bill-1",
     name: "正式法案名称",
@@ -34,9 +36,7 @@ describe("createShareMessage", () => {
         title: "わかりやすいタイトル",
       } as BillWithContent["bill_content"],
     };
-    expect(createShareMessage(bill)).toBe(
-      "わかりやすいタイトル #みらい議会川崎版"
-    );
+    expect(createShareMessage(bill)).toBe(`わかりやすいタイトル ${hashtag}`);
   });
 
   it("falls back to bill.name when bill_content is undefined", () => {
@@ -44,7 +44,7 @@ describe("createShareMessage", () => {
       ...baseBill,
       bill_content: undefined,
     };
-    expect(createShareMessage(bill)).toBe("正式法案名称 #みらい議会川崎版");
+    expect(createShareMessage(bill)).toBe(`正式法案名称 ${hashtag}`);
   });
 
   it("falls back to bill.name when bill_content.title is null", () => {
@@ -54,11 +54,11 @@ describe("createShareMessage", () => {
         title: null,
       } as unknown as BillWithContent["bill_content"],
     };
-    expect(createShareMessage(bill)).toBe("正式法案名称 #みらい議会川崎版");
+    expect(createShareMessage(bill)).toBe(`正式法案名称 ${hashtag}`);
   });
 
-  it("includes hashtag #みらい議会川崎版", () => {
+  it("includes the hashtag from siteConfig", () => {
     const message = createShareMessage(baseBill);
-    expect(message).toContain("#みらい議会川崎版");
+    expect(message).toContain(hashtag);
   });
 });

@@ -1,12 +1,11 @@
-# みらい議会ー川崎版
+# みらい議会＠水俣市
 
-https://mirai-gikai-kawasaki-web.vercel.app/
-※後でドメイン変更するかもしれない
+（公開URLは準備中）
 
 ## 注意事項
-- このプロジェクトは「チームみらい」が開発・運営している「みらい議会」をForkして開発したものとなります。  
+- このプロジェクトは「チームみらい」が開発・運営している「みらい議会」をForkした[川崎版](https://github.com/GondoTakashi/mirai-gikai-kawasaki)を、さらに水俣市議会向けにForkしたものです。  
 - **非公式**ですので、ここでの不具合や気になる点についての問い合わせは  
-  党公式ではなく[GondoTakashi](https://x.com/TakashiGondo)にご連絡ください。
+  党公式ではなく[yyymkto](https://x.com/yyymkto)にご連絡ください。
 
 ## 他地方議会向けForkガイド
 - 他の市議会・県議会等のバージョンを作成したい場合は、まず以下のガイドラインをご確認ください：
