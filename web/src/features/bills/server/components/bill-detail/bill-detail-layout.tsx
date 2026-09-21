@@ -3,8 +3,11 @@ import { siteConfig } from "@/config/site.config";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
 import { InterviewLandingSection } from "@/features/interview-config/client/components/interview-landing-section";
 import { getInterviewConfig } from "@/features/interview-config/server/loaders/get-interview-config";
-import { BillInterviewOpinionsSection } from "@/features/interview-report/server/components/bill-interview-opinions-section";
 import { getPublicReportsByBillId } from "@/features/interview-report/server/loaders/get-public-reports-by-bill-id";
+import { BillTopicsPreviewSection } from "@/features/user-topic-analysis/server/components/bill-topics-preview-section";
+import { InterviewCountPill } from "@/features/user-topic-analysis/server/components/interview-count-pill";
+import { getPublicTopicAnalysis } from "@/features/user-topic-analysis/server/loaders/get-public-topic-analysis";
+import { routes } from "@/lib/routes";
 import { BillDetailClient } from "../../../client/components/bill-detail/bill-detail-client";
 import { BillDisclaimer } from "../../../client/components/bill-detail/bill-disclaimer";
 import { BillStatusProgress } from "../../../client/components/bill-detail/bill-status-progress";
@@ -27,10 +30,13 @@ export async function BillDetailLayout({
     bill.status === "preparing" ||
     (bill.faction_stances && bill.faction_stances.length > 0);
 
-  const [interviewConfig, publicReportsResult] = await Promise.all([
-    getInterviewConfig(bill.id),
-    getPublicReportsByBillId(bill.id),
-  ]);
+  const [interviewConfig, publicReportsResult, topicAnalysis] =
+    await Promise.all([
+      getInterviewConfig(bill.id),
+      getPublicReportsByBillId(bill.id),
+      getPublicTopicAnalysis(bill.id),
+    ]);
+  const topics = topicAnalysis?.topics ?? [];
 
   return (
     <div className="container mx-auto pb-8 max-w-4xl">
@@ -48,7 +54,8 @@ export async function BillDetailLayout({
         <BillDetailHeader
           bill={bill}
           hasInterviewConfig={interviewConfig != null}
-          opinionCount={publicReportsResult.totalCount}
+          opinionCount={topicAnalysis?.total_opinions ?? 0}
+          topicCount={topicAnalysis?.topics.length ?? 0}
         />
         <Container>
           {/* 議案ステータス進捗 */}
@@ -64,15 +71,27 @@ export async function BillDetailLayout({
       </BillDetailClient>
 
       <Container>
-        {publicReportsResult.totalCount > 0 && (
+        {/* 議案のトピック一覧（AIインタビュー意見の整理） */}
+        <div className="my-8">
+          <BillTopicsPreviewSection
+            billId={bill.id}
+            topics={topics}
+            publicReportCount={publicReportsResult.totalCount}
+          />
+        </div>
+        {/*
+          トピック分析をまだ実行していない議案でも、公開済みの回答があれば
+          回答一覧へ辿れるようにする（トピックがあればプレビュー内に同じ導線が出る）。
+        */}
+        {topics.length === 0 && publicReportsResult.totalCount > 0 && (
           <div className="my-8">
-            <BillInterviewOpinionsSection
-              billId={bill.id}
-              reports={publicReportsResult.reports}
-              totalCount={publicReportsResult.totalCount}
+            <InterviewCountPill
+              count={publicReportsResult.totalCount}
+              href={routes.billOpinions(bill.id)}
             />
           </div>
         )}
+
         {siteConfig.features.aiInterview && interviewConfig != null && (
           <div className="my-8">
             <InterviewLandingSection billId={bill.id} />

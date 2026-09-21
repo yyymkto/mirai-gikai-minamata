@@ -1,10 +1,10 @@
 import { ExternalLink } from "lucide-react";
 import Image from "next/image";
+import { siteConfig } from "@/config/site.config";
 import type {
   BillWithContent,
   ComingSoonBill,
 } from "@/features/bills/shared/types";
-import { siteConfig } from "@/config/site.config";
 import type { CouncilSession } from "../../shared/types";
 import { BillListWithStatusFilter } from "./bill-list-with-status-filter";
 

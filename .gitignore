@@ -4,6 +4,7 @@ node_modules
 .DS_Store
 .vscode
 .claude/worktrees
+*.local.json
 
 # env files
 .env
@@ -13,3 +14,9 @@ node_modules
 
 # local claude permissions
 .claude/settings.local.json
+
+# Cloud Run infra（秘密・鍵はコミットしない）
+# config.env / config.env.<env>（環境別）をまとめて除外（config.example.env は対象外）
+infra/cloud-run/config.env
+infra/cloud-run/config.env.*
+*-key.json

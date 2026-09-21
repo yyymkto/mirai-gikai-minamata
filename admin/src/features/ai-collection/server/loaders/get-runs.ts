@@ -1,6 +1,6 @@
 import "server-only";
-import { loadAllRuns, loadRun } from "../utils/storage";
 import type { CollectionRun } from "../../shared/types";
+import { loadAllRuns, loadRun } from "../utils/storage";
 
 export async function getRuns(): Promise<CollectionRun[]> {
   return loadAllRuns();

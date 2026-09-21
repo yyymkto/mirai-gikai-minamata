@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   adminClient,
-  createTestUser,
+  cleanupTestBill,
   cleanupTestUser,
   createTestInterviewData,
-  cleanupTestBill,
+  createTestUser,
   type TestUser,
 } from "@test-utils/utils";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { GetUserFn } from "../utils/verify-session-ownership";
 import { getInterviewSession } from "./get-interview-session";
 
@@ -82,6 +82,63 @@ describe("getInterviewSession 統合テスト", () => {
     });
 
     expect(session).toBeNull();
+  });
+
+  it("完了済みセッションより古い未完了セッションが残っていてもnullを返す", async () => {
+    // 途中で離脱した古いセッションをアーカイブせずに残したまま、
+    // それより新しいセッションを完了済みにする。
+    // LP は最新の未アーカイブセッション（完了済み）を見て
+    // 「もう一度新たに回答する」を表示するため、ここで古い未完了セッションを
+    // 拾ってしまうと過去の途中経過から再開されてしまう。
+    await adminClient
+      .from("interview_sessions")
+      .update({ created_at: new Date(Date.now() - 60_000).toISOString() })
+      .eq("id", sessionId);
+
+    const { data: completedSession } = await adminClient
+      .from("interview_sessions")
+      .insert({
+        interview_config_id: interviewConfigId,
+        user_id: testUser.id,
+        completed_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+
+    const session = await getInterviewSession(interviewConfigId, {
+      getUser: createGetUser(testUser.id),
+    });
+
+    expect(session).toBeNull();
+    expect(completedSession?.id).not.toBe(sessionId);
+  });
+
+  it("最新の未アーカイブセッションが未完了なら再開対象として返す", async () => {
+    // 完了済みセッションが過去に存在しても、その後に開始された
+    // 未完了セッションは再開できる必要がある。
+    await adminClient
+      .from("interview_sessions")
+      .update({
+        completed_at: new Date().toISOString(),
+        created_at: new Date(Date.now() - 60_000).toISOString(),
+      })
+      .eq("id", sessionId);
+
+    const { data: activeSession } = await adminClient
+      .from("interview_sessions")
+      .insert({
+        interview_config_id: interviewConfigId,
+        user_id: testUser.id,
+      })
+      .select("id")
+      .single();
+
+    const session = await getInterviewSession(interviewConfigId, {
+      getUser: createGetUser(testUser.id),
+    });
+
+    expect(session?.id).toBe(activeSession?.id);
+    expect(session?.completed_at).toBeNull();
   });
 
   it("別ユーザーのセッションはnullを返す", async () => {

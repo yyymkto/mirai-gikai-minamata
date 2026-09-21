@@ -4,10 +4,10 @@ import { Loader2, PauseCircle } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import type { CollectionRun } from "../../shared/types";
 import { CollectionForm } from "./collection-form";
 import { DraftReview } from "./draft-review";
 import { RunHistory } from "./run-history";
-import type { CollectionRun } from "../../shared/types";
 
 type AiCollectionPageProps = {
   initialRuns: CollectionRun[];

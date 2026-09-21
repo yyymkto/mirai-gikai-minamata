@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layouts/container";
-import { routes } from "@/lib/routes";
 import {
   LegalPageLayout,
   LegalParagraph,
   LegalSectionTitle,
 } from "@/components/layouts/legal-page-layout";
 import { siteConfig } from "@/config/site.config";
+import { routes } from "@/lib/routes";
 
 export const metadata: Metadata = {
   title: `よくあるご質問 | ${siteConfig.siteName}`,

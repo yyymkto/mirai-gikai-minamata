@@ -1,21 +1,12 @@
 "use client";
 
-import type { Route } from "next";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { routes } from "@/lib/routes";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { BillActionsMenu } from "../bill-actions-menu/bill-actions-menu";
-import { PreviewButton } from "./preview-button";
-import { PublishStatusBadge } from "./publish-status-badge";
-import { FeaturedFilter } from "./featured-filter";
-import { PublishStatusFilter } from "./publish-status-filter";
-import { ReviewStatusFilter } from "./review-status-filter";
-import { SessionFilter } from "./session-filter";
-import { TagFilter } from "./tag-filter";
-import { ViewButton } from "./view-button";
+import { routes } from "@/lib/routes";
 import { BILL_STATUS_CONFIG } from "../../../shared/constants/bill-config";
 import type {
   BillSortConfig,
@@ -24,6 +15,15 @@ import type {
   BillWithCouncilSession,
 } from "../../../shared/types";
 import { getBillStatusLabel } from "../../../shared/types";
+import { BillActionsMenu } from "../bill-actions-menu/bill-actions-menu";
+import { FeaturedFilter } from "./featured-filter";
+import { PreviewButton } from "./preview-button";
+import { PublishStatusBadge } from "./publish-status-badge";
+import { PublishStatusFilter } from "./publish-status-filter";
+import { ReviewStatusFilter } from "./review-status-filter";
+import { SessionFilter } from "./session-filter";
+import { TagFilter } from "./tag-filter";
+import { ViewButton } from "./view-button";
 
 type Session = { id: string; name: string };
 type Tag = { id: string; label: string };
@@ -46,7 +46,7 @@ const COLUMNS: ColumnConfig[] = [
     resizable: true,
   },
   { key: "status", defaultWidth: 160, minWidth: 100, resizable: true },
-  { key: "published_at", defaultWidth: 100, minWidth: 80, resizable: true },
+  { key: "submitted_date", defaultWidth: 100, minWidth: 80, resizable: true },
   { key: "actions", defaultWidth: 50, minWidth: 50, resizable: false },
 ];
 
@@ -225,12 +225,12 @@ export function ResizableBillTable({
                       審議ステータス
                     </SortableHeadButton>
                   )}
-                  {col.key === "published_at" && (
+                  {col.key === "submitted_date" && (
                     <SortableHeadButton
-                      field="published_at"
+                      field="submitted_date"
                       sortConfig={sortConfig}
                     >
-                      公開日
+                      提出日
                     </SortableHeadButton>
                   )}
                   {col.key === "actions" && null}
@@ -318,8 +318,8 @@ function BillRow({ bill }: { bill: BillWithCouncilSession }) {
       </td>
       <td className="p-2 align-middle overflow-hidden">
         <span className="block truncate text-gray-600">
-          {bill.published_at
-            ? new Date(bill.published_at).toLocaleDateString("ja-JP", {
+          {bill.submitted_date
+            ? new Date(bill.submitted_date).toLocaleDateString("ja-JP", {
                 timeZone: "Asia/Tokyo",
               })
             : "-"}

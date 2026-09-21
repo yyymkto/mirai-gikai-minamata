@@ -16,14 +16,19 @@ const baseBill: Bill = {
   committee_id: null,
   is_featured: true,
   pdf_url: null,
+  is_review_completed: true,
   publish_status: "published",
   published_at: null,
+  submitted_date: null,
   share_thumbnail_url: null,
+  slug: null,
   status: "preparing",
   status_note: null,
   status_order: BILL_STATUS_ORDER.preparing,
   publish_status_order: 2,
   thumbnail_url: null,
+  knowledge_source: null,
+  use_knowledge_source_in_chat: false,
 };
 
 describe("prepareBillForDuplication", () => {
@@ -50,6 +55,17 @@ describe("prepareBillForDuplication", () => {
     const billWithNumber = { ...baseBill, bill_number: "第1号" };
     const result = prepareBillForDuplication(billWithNumber);
     expect(result.bill_number).toBe("");
+  });
+
+  it("is_review_completedをfalseにリセットする", () => {
+    const result = prepareBillForDuplication(baseBill);
+    expect(result.is_review_completed).toBe(false);
+  });
+
+  it("slugをnullにリセットする", () => {
+    const billWithSlug = { ...baseBill, slug: "test-slug" };
+    const result = prepareBillForDuplication(billWithSlug);
+    expect(result.slug).toBeNull();
   });
 
   it("その他のフィールドを保持する", () => {

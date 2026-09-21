@@ -9,7 +9,6 @@ import { Form } from "@/components/ui/form";
 
 import type { Committee } from "@/features/committees/shared/types";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
-import { utcToJstDatetimeLocal } from "@/lib/utils/datetime-jst";
 import { updateBill } from "../../server/actions/update-bill";
 import {
   type Bill,
@@ -44,15 +43,21 @@ export function BillEditForm({
       name: bill.name,
       status: bill.status,
       status_note: bill.status_note,
-      published_at: bill.published_at
-        ? utcToJstDatetimeLocal(bill.published_at)
+      submitted_date: bill.submitted_date
+        ? new Date(bill.submitted_date).toLocaleDateString("sv-SE", {
+            timeZone: "Asia/Tokyo",
+          })
         : "",
       thumbnail_url: bill.thumbnail_url,
       share_thumbnail_url: bill.share_thumbnail_url,
+      slug: bill.slug,
       is_featured: bill.is_featured,
+      is_review_completed: bill.is_review_completed,
       committee_id: bill.committee_id,
       council_session_id: defaultCouncilSessionId,
       pdf_url: bill.pdf_url,
+      knowledge_source: bill.knowledge_source ?? "",
+      use_knowledge_source_in_chat: bill.use_knowledge_source_in_chat,
     },
   });
 

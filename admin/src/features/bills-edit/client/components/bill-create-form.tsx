@@ -9,7 +9,6 @@ import { Form } from "@/components/ui/form";
 
 import type { Committee } from "@/features/committees/shared/types";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
-import { utcToJstDatetimeLocal } from "@/lib/utils/datetime-jst";
 import { createBill } from "../../server/actions/create-bill";
 import { type BillCreateInput, billCreateSchema } from "../../shared/types";
 import { useBillForm } from "../hooks/use-bill-form";
@@ -37,12 +36,18 @@ export function BillCreateForm({
       name: "",
       status: "preparing",
       status_note: null,
-      published_at: utcToJstDatetimeLocal(new Date().toISOString()),
+      submitted_date: new Date().toLocaleDateString("sv-SE", {
+        timeZone: "Asia/Tokyo",
+      }),
       thumbnail_url: null,
       share_thumbnail_url: null,
+      slug: null,
       is_featured: false,
+      is_review_completed: false,
       council_session_id: defaultCouncilSessionId,
       pdf_url: null,
+      knowledge_source: "",
+      use_knowledge_source_in_chat: false,
     },
   });
 

@@ -31,6 +31,13 @@ export const siteConfig = {
     terms: "",
     privacy: "",
     faq: "",
+    /**
+     * この fork 版自身のソースコード公開先（AGPL-3.0 第13条）。
+     * 本家リポジトリでは代用できないので、必ず fork 先の公開リポジトリを指定する。
+     */
+    githubRepo: "https://github.com/yyymkto/mirai-gikai-minamata",
+    /** 本家が公開している自主制作（fork）ガイドライン */
+    forkGuidelinesNote: "https://note.com/team_mirai_jp/n/nc59ec347e8c7",
   },
   /**
    * ページを管理する政党名（空文字列の場合は政党名を省略した汎用表現を使用）
@@ -61,5 +68,11 @@ export const siteConfig = {
      * 非公式運営など、党の公式サービスとして出さない場合は false にする。
      */
     showTeamMiraiSection: false as boolean,
+    /**
+     * オープンデータAPI（/api/open-data）と関連ページ（APIリファレンス・データ利用規約）の公開。
+     * データ利用規約は本家（チームみらい）名義の文書のため、運営者として
+     * 利用規約・ライセンスを整備するまでは false にしておく。
+     */
+    openData: false as boolean,
   },
 } as const;

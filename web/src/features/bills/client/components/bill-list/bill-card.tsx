@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { RubySafeLineClamp } from "@/components/ruby-safe-line-clamp";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDateJST } from "@/lib/utils/date";
+import { formatDateWithDots } from "@/lib/utils/date";
 import type { BillWithContent } from "../../../shared/types";
+import { ReviewCompleteBadge } from "../bill-detail/review-status-banner";
 import { BillStatusBadge } from "./bill-status-badge";
 import { BillTag } from "./bill-tag";
 
@@ -15,7 +16,7 @@ export function BillCard({ bill }: BillCardProps) {
   const summary = bill.bill_content?.summary;
 
   return (
-    <Card className="border border-black hover:bg-muted/50 transition-colors relative overflow-hidden max-w-[634px]">
+    <Card className="border border-black shadow-none hover:bg-muted/50 transition-colors relative overflow-hidden max-w-[634px]">
       <div className="flex flex-col">
         {/* 注目バッジエリア */}
         {bill.is_featured && (
@@ -47,12 +48,18 @@ export function BillCard({ bill }: BillCardProps) {
             <div className="flex flex-col gap-3">
               <CardTitle className="text-2xl/8 tracking-normal">
                 {displayTitle}
+                {bill.is_review_completed && (
+                  <>
+                    {" "}
+                    <ReviewCompleteBadge />
+                  </>
+                )}
               </CardTitle>
               <div className="flex flex-row gap-4">
                 <BillStatusBadge status={bill.status} className="w-fit" />
                 <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                  {bill.published_at && (
-                    <time>{formatDateJST(bill.published_at)} 提出</time>
+                  {bill.submitted_date && (
+                    <time>{formatDateWithDots(bill.submitted_date)} 提出</time>
                   )}
                 </div>
               </div>

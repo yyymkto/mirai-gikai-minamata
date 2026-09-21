@@ -74,6 +74,8 @@ export type BillWithContent = Bill & {
   tags: BillTag[];
   featured_tag?: FeaturedTag;
   hasPublicInterview?: boolean;
+  /** 公開レポート件数。一覧の回答数バッジと「声が集まっている順」に使う。 */
+  publicReportCount?: number;
 };
 
 // タグごとにグループ化された議案
@@ -129,4 +131,5 @@ export const STANCE_LABELS: Record<StanceTypeEnum, string> = {
   conditional_against: "条件付き反対",
   considering: "検討中",
   continued_deliberation: "継続審査中",
+  free_vote: "自由投票",
 };

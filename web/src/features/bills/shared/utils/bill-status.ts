@@ -9,6 +9,10 @@ export function getCardStatusLabel(status: BillStatusEnum): string {
       return "議会審議中";
     case "approved":
       return "可決";
+    case "adopted":
+      return "採択";
+    case "partially_adopted":
+      return "趣旨採択";
     case "rejected":
       return "否決";
     case "reported":
@@ -28,6 +32,8 @@ export function getStatusVariant(
     case "plenary_session":
       return "light";
     case "approved":
+    case "adopted":
+    case "partially_adopted":
       return "default";
     case "rejected":
       return "dark";

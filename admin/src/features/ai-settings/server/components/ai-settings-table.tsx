@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/table";
 import { ModelSelector } from "../../client/components/model-selector";
 import {
-  CONFIGURABLE_FEATURE_IDS,
   aiFeatureConfigs,
+  CONFIGURABLE_FEATURE_IDS,
 } from "../../shared/ai-feature-models";
 import {
   getModelLabel,

@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@mirai-gikai/supabase";
-import { invalidateWebCache } from "@/lib/utils/cache-invalidation";
+import { revalidatePath } from "next/cache";
 import { routes } from "@/lib/routes";
+import { invalidateWebCache } from "@/lib/utils/cache-invalidation";
 
 export async function deleteStance(stanceId: string) {
   try {

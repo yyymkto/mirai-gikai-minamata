@@ -1,7 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { routes } from "@/lib/routes";
 import { BillEditForm } from "@/features/bills-edit/client/components/bill-edit-form";
 import { BillTagsForm } from "@/features/bills-edit/client/components/bill-tags-form";
 import { getBillById } from "@/features/bills-edit/server/loaders/get-bill-by-id";
@@ -12,6 +11,7 @@ import { StancesManager } from "@/features/faction-stances/client/components/sta
 import { getFactions } from "@/features/faction-stances/server/loaders/get-factions";
 import { getStancesByBillId } from "@/features/faction-stances/server/loaders/get-stances-by-bill-id";
 import { loadTags } from "@/features/tags/server/loaders/load-tags";
+import { routes } from "@/lib/routes";
 
 interface BillEditPageProps {
   params: Promise<{

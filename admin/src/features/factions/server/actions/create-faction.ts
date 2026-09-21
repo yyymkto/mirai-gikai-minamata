@@ -1,10 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@mirai-gikai/supabase";
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/features/auth/server/lib/auth-server";
-import { invalidateWebCache } from "@/lib/utils/cache-invalidation";
 import { routes } from "@/lib/routes";
+import { invalidateWebCache } from "@/lib/utils/cache-invalidation";
 import type { CreateFactionInput } from "../../shared/types";
 
 export async function createFaction(input: CreateFactionInput) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -10,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
 import { updateAiModel } from "../../server/actions/update-ai-model";
 import type { ModelCategory } from "../../shared/ai-feature-models";
 import type { AiModelGroup } from "../../shared/ai-model-options";

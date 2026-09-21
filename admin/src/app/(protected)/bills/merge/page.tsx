@@ -1,8 +1,8 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { BillsMergePage } from "@/features/bills-merge/client/components/bills-merge-page";
-import { routes } from "@/lib/routes";
 import { getDuplicateGroups } from "@/features/bills-merge/server/loaders/get-duplicate-groups";
+import { routes } from "@/lib/routes";
 
 export default async function BillsMergeRoute() {
   const groups = await getDuplicateGroups();

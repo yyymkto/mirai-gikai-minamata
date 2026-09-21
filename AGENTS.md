@@ -8,8 +8,8 @@
 変更作業は、**必ず git worktree を作成してから開始すること**。メインのリポジトリディレクトリでは直接変更を行わない。
 
 ```bash
-# 1. worktreeを作成
-git worktree add ../mirai-gikai-minamata-worktree/<branch-name> -b <branch-name>
+# 1. worktreeを作成（必ずminamata/developから分岐すること）
+git worktree add ../mirai-gikai-minamata-worktree/<branch-name> -b <branch-name> minamata/develop
 
 # 2. settings.local.jsonをコピー（権限設定のため必須）
 mkdir -p ../mirai-gikai-minamata-worktree/<branch-name>/.claude
@@ -22,6 +22,7 @@ cp .env ../mirai-gikai-minamata-worktree/<branch-name>/
 cd ../mirai-gikai-minamata-worktree/<branch-name> && pnpm install --frozen-lockfile
 ```
 
+- **必ず `minamata/develop` から分岐する**: `git worktree add` の末尾に `minamata/develop` を指定すること。省略すると現在のブランチから分岐し、無関係なコミットがPRに混入する原因になる。
 - **目的**: minamata/developブランチを常にクリーンに保ち、作業の分離と並列作業を容易にする
 - **重要**: worktreeは必ずプロジェクト外（`../mirai-gikai-minamata-worktree/`）に作成すること。プロジェクト内（`.claude/worktrees/` 等）に作成するとBiomeが「nested root configuration」エラーを起こす。
 
@@ -49,8 +50,15 @@ gh pr create --base minamata/develop ...
 ```
 
 ### セルフレビュー必須
-実装完了後（コミット前）に、必ず `/review` スキルを実行してセルフレビューを受けること。`/review` はCodexレビュー・`test-guidelines-checker` によるテストガイドラインチェック・`code-quality-checker` によるコード品質チェックを同時に実行する。指摘があれば修正してからコミットする。
-レビューを通過したら、ユーザーに確認せずそのままPR作成まで一気に進めること（push → `gh pr create`）。
+実装完了後（コミット前）に、以下の順で必ずセルフレビューを実施すること：
+
+1. **`/simplify` を実行**: 変更コードの重複・可読性・効率の観点から自己修正を行う。明らかな問題を先に潰しておくことで、後段の `/review` の指摘ノイズを減らす。
+2. **`/review` を実行**: Codexレビュー・`test-guidelines-checker` によるテストガイドラインチェック・`code-quality-checker` によるコード品質チェックを同時に実行する。指摘があれば修正する。
+
+両方を通過したら、ユーザーに確認せずそのままコミット → push → PR作成まで一気に進めること（`gh pr create`）。
+
+### UI変更時のスクリーンショット必須
+PR作成後、変更差分にUI関連ファイル（`web/src/`, `admin/src/` 配下の `.tsx`, `.css` 等）が含まれる場合は、必ず `/pr-screenshot` スキルを実行すること。スキルが自動でdevサーバー起動→スクリーンショット撮影→R2アップロード→PR本文更新まで行う。
 
 ### 並列PR作成
 複数の独立したPRを作成する場合は `/parallel-pr` スキルを使用すること。
@@ -160,11 +168,15 @@ Repository レイヤーの詳細は [docs/repository-layer.md](docs/repository-l
   1. **Conflict確認**: `gh pr view <番号> --json mergeable,mergeStateStatus` でマージ可能か確認。conflictがあれば解消してpushする。
   2. **CI確認**: `gh pr checks <番号>` でCIの状態を確認。失敗があれば原因を調査し修正してpushする。CIが実行中の場合は完了まで待つ。
   3. **CodeRabbitレビュー確認**: CodeRabbitのレビューが届くまで待ってからコメントを確認する。レビューは通常2〜3分で届く。`gh api repos/{owner}/{repo}/pulls/{number}/comments` でコメントを取得し、空なら少し待って再取得する。**Minor以上（Minor/Major/Critical）の指摘はすべて対応が必須。** 対応とは「修正してpush」または「スキップ理由を該当コメントに返信」のいずれか。Nitpickのみスキップ可。
-  4. **対応済みコメントのresolve（必須）**: 修正をpushした後、対応済みのレビューコメントをGraphQL APIでresolveする。まず `gh api graphql` でスレッド一覧を取得し、`resolveReviewThread` mutationで対応済みスレッドをresolveする。
+  4. **対応済みコメントへの返信とresolve（必須）**: 対応済みコメント（修正pushした場合・スキップした場合の両方）に対して、該当コメントへ返信した上でGraphQL APIでresolveする。返信なしで黙ってresolveするのは禁止。
      ```bash
-     # スレッド一覧取得（isResolved=falseのものが未resolve）
+     # 1. 該当コメントに返信（対応内容の概要を記載、修正の場合はコミットSHAを含める）
+     gh api repos/{owner}/{repo}/pulls/{number}/comments -X POST \
+       -F in_reply_to=<コメントID> \
+       -f body='修正しました (<コミットSHA>)。<対応内容の要約>'
+     # 2. スレッド一覧取得（isResolved=falseのものが未resolve）
      gh api graphql -f query='{ repository(owner: "{owner}", name: "{repo}") { pullRequest(number: <番号>) { reviewThreads(first: 50) { nodes { id isResolved comments(first: 1) { nodes { body path } } } } } } }'
-     # 対応済みスレッドをresolve
+     # 3. 対応済みスレッドをresolve
      gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<スレッドID>"}) { thread { isResolved } } }'
      ```
 
@@ -172,7 +184,7 @@ Repository レイヤーの詳細は [docs/repository-layer.md](docs/repository-l
 - ローカル開発前に `npx supabase start` を実行し、`.env.example` を `.env` にコピーして値を整えます。
 - スキーマ変更時は `supabase/migrations` のマイグレーションと `packages/supabase/types/supabase.types.ts` の再生成ファイルをセットでコミットします。
 - `pnpm seed` は `admin@example.com / admin123456` を含む検証データを投入するため、開発用途に限定してください。
-- **RLSとアクセスパターン**: マイグレーションでは必ず `alter table <テーブル名> enable row level security;` を記述してRLSを有効化すること。ただし **ポリシーは定義しない**（デフォルト全拒否）。データアクセスはすべて `createAdminClient()`（Service Role Key）経由で行い、認可ロジックはアプリケーション層（Server Actions / Loaders）で実装する。
+- **RLSとアクセスパターン**: マイグレーションでは必ず `alter table <テーブル名> enable row level security;` を記述してRLSを有効化すること。ただし **ポリシーは定義しない**（デフォルト全拒否）。データアクセスはすべて `createAdminClient()`（Supabase Secret Key）経由で行い、認可ロジックはアプリケーション層（Server Actions / Loaders）で実装する。
 
 ## ドキュメント作成ルール
 - 要件定義や実装計画をまとめる際は論点を先に洗い出し、不明点を確認してから Markdown で整理します。

@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CompactBillCard } from "@/features/bills/client/components/bill-list/compact-bill-card";
 import type {
   BillTag,
   BillWithContent,
   ComingSoonBill,
 } from "@/features/bills/shared/types";
-import { CompactBillCard } from "@/features/bills/client/components/bill-list/compact-bill-card";
 
 type StatusFilterType = "all" | "approved" | "rejected" | "other";
 

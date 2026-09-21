@@ -90,3 +90,32 @@ export async function findPreviousCouncilSession(
 
   return data;
 }
+
+/**
+ * 指定日より前に閉会した直近の定例会を取得
+ *
+ * 閉会中のトップページで「どの定例会が終わったか」を出すために使う。
+ * `findPreviousCouncilSession` はアクティブな定例会の開始日を基準に「その前」を返すので、
+ * 閉会中（アクティブな定例会が無い、または日付が範囲外）の用途には合わない。
+ */
+export async function findLatestClosedCouncilSession(
+  onDate: string
+): Promise<CouncilSession | null> {
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase
+    .from("council_sessions")
+    .select("*")
+    .lt("end_date", onDate)
+    .order("end_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    // 他の取得関数と同じく、失敗はカードを出さないだけに留める。
+    console.error("Failed to fetch latest closed council session:", error);
+    return null;
+  }
+
+  return data;
+}
