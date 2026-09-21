@@ -2,7 +2,7 @@ name: Migrate DB then Deploy Web
 
 on:
   push:
-    branches: [kawasaki/develop]
+    branches: [minamata/develop]
   workflow_dispatch:
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: kawasaki/develop
+          ref: minamata/develop
 
       # Supabase CLI セットアップ
       - uses: supabase/setup-cli@b60b5899c73b63a2d2d651b1e90db8d4c9392f51 # v1.6.0

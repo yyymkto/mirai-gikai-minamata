@@ -8,6 +8,5 @@ export const siteConfig = {
   councilName: "水俣市議会",
   councilBaseUrl: "https://www.city.minamata.lg.jp/",
   councilBillsDetailUrl: "https://www.city.minamata.lg.jp/default.html",
-  councilFactionExamples:
-    "◯◯議員団、△△会派等",
+  councilFactionExamples: "◯◯議員団、△△会派等",
 } as const;

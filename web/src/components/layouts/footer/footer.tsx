@@ -20,10 +20,7 @@ export function Footer() {
     <footer className="bg-mirai-gradient text-slate-900">
       <div className="mx-auto flex w-full max-w-[500px] flex-col items-center px-6 py-14 pb-20 text-center">
         {siteConfig.features.showTeamMiraiSection && <FooterLogoSection />}
-        <div className="mb-6 font-bold text-sm bg-white/50 px-4 py-2 rounded-md">
-          <p>これは政党チームみらいが運営しているものではありません</p>
-          <p className="mt-1 text-xs font-normal">本家版はこちら：<a href="https://gikai.team-mir.ai/" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-600">みらい議会</a></p>
-        </div>
+        <FooterDisclaimer />
         <FooterPrimaryLinks />
         <FooterPolicies />
         {siteConfig.features.showTeamMiraiSection && <FooterCopyright />}
@@ -47,6 +44,25 @@ function FooterLogoSection() {
           className="h-auto"
         />
       </Link>
+    </div>
+  );
+}
+
+function FooterDisclaimer() {
+  return (
+    <div className="mb-6 rounded-md bg-white/50 px-4 py-2 text-sm font-bold">
+      <p>これは政党チームみらいが運営しているものではありません</p>
+      <p className="mt-1 text-xs font-normal">
+        本家版はこちら：
+        <Link
+          href="https://gikai.team-mir.ai/"
+          target="_blank"
+          rel="noreferrer"
+          className="underline hover:text-primary-accent"
+        >
+          みらい議会
+        </Link>
+      </p>
     </div>
   );
 }

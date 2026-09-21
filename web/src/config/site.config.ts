@@ -20,11 +20,11 @@ export const siteConfig = {
   ],
   councilBaseUrl: "https://www.city.minamata.lg.jp/",
   /** 議案・議決結果の一覧ページ */
-  councilBillsDetailUrl:
-    "https://www.city.minamata.lg.jp/default.html",
+  councilBillsDetailUrl: "https://www.city.minamata.lg.jp/default.html",
   twitterHashtag: "みらい議会_水俣市", // # なし
   externalLinks: {
-    report: "https://docs.google.com/forms/d/e/1FAIpQLSc2UCHGoFN9xVWsW5FUSgahkQQDoLfhAdDwrrJMJC41br69XQ/viewform?usp=dialog",
+    report:
+      "https://docs.google.com/forms/d/e/1FAIpQLSc2UCHGoFN9xVWsW5FUSgahkQQDoLfhAdDwrrJMJC41br69XQ/viewform?usp=dialog",
     aboutNote: "",
     donation: "",
     teamAbout: "",

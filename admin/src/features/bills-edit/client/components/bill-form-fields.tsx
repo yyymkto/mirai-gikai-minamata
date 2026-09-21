@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { siteConfig } from "@/config/site.config";
 import type { BillStatus } from "@/features/bills/shared/types";
 import type { Committee } from "@/features/committees/shared/types";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
@@ -290,7 +291,7 @@ export function BillFormFields({
             <FormControl>
               <Input
                 type="url"
-                placeholder="https://www.city.kawasaki.jp/..."
+                placeholder={`${siteConfig.councilBaseUrl}...`}
                 {...field}
                 value={field.value ?? ""}
               />
