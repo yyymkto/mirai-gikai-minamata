@@ -21,11 +21,17 @@ export const routes = {
   experts: () => "/experts" as const,
   aiSettings: () => "/ai-settings" as const,
   interviews: () => "/interviews" as const,
+  interviewOpinionBackfill: () => "/interview-opinion-backfill" as const,
+  userTopicAnalysisAll: () => "/user-topic-analysis" as const,
 
   // ── 議案配下 ──────────────────────────────────────
   billEdit: (billId: string) => `/bills/${billId}/edit` as const,
   billContentsEdit: (billId: string) =>
     `/bills/${billId}/contents/edit` as const,
+  billUserTopicAnalysis: (billId: string) =>
+    `/bills/${billId}/user-topic-analysis` as const,
+  billAnalysisViewer: (billId: string) =>
+    `/bills/${billId}/analysis-viewer` as const,
 
   // インタビュー
   billInterview: (billId: string) => `/bills/${billId}/interview` as const,
@@ -37,6 +43,8 @@ export const routes = {
   // レポート（インタビュー設定配下）
   billReports: (billId: string, configId: string) =>
     `/bills/${billId}/interview/${configId}/reports` as const,
+  billReportsSearch: (billId: string, configId: string) =>
+    `/bills/${billId}/interview/${configId}/reports/search` as const,
   billReportDetail: (billId: string, configId: string, sessionId: string) =>
     `/bills/${billId}/interview/${configId}/reports/${sessionId}` as const,
 

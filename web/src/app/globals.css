@@ -73,6 +73,7 @@
   --color-mirai-surface-muted: #e5e5ea;
   --color-mirai-surface-tag: #e8e8e8;
   --color-mirai-surface-warm: #eae6dd;
+  --color-mirai-surface-gray: #f6f6f6;
 
   /* Border */
   --color-mirai-border: #d2d2d2;
@@ -107,6 +108,28 @@
   /* Gradient endpoints */
   --color-mirai-gradient-start: #60a5fa;
   --color-mirai-gradient-end: #bfdbfe;
+
+  /*
+   * Brand accent（本家ではチームみらいのティール）。
+   * トークン名は本家に合わせて残し、値を水俣版の青系に差し替えている。
+   */
+  --color-mirai-brand-teal: #2563eb;
+  --color-mirai-brand-teal-hover: #1d4ed8;
+  --color-mirai-brand-teal-deep: #1e3a8a;
+  --color-mirai-brand-mint: #dbeafe;
+
+  /* Topic analysis */
+  --color-topic-info-bg: #eaf1fd;
+  --color-topic-chip-bg: #f1f1f1;
+  --color-topic-count: #6b7775;
+  --color-topic-label: #909090;
+  --color-topic-affected: #c8642a;
+  --color-topic-industry: #2563a8;
+  --color-topic-expert: #0f8472;
+  --color-topic-citizen: #909090;
+
+  /* 引用文の明朝体（Noto Serif JP） */
+  --font-mirai-serif: var(--font-noto-serif-jp);
 }
 
 :root {
@@ -240,7 +263,11 @@
   }
 
   .bg-mirai-light-gradient {
-    background-image: linear-gradient(to bottom, #e2f6f3, #eef6e2);
+    background-image: linear-gradient(
+      to bottom,
+      var(--color-mirai-brand-mint),
+      #eff6ff
+    );
   }
 
   .bg-mirai-white-fade {
@@ -325,4 +352,14 @@
 
 button {
   cursor: pointer;
+}
+
+/* スクロールは保持しつつスクロールバーを非表示にするユーティリティ。 */
+@utility scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
 }

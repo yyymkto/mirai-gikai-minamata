@@ -2,27 +2,32 @@ import { openai } from "@ai-sdk/openai";
 import type { Database } from "@mirai-gikai/supabase";
 import {
   convertToModelMessages,
+  type LanguageModel,
   streamText,
   tool,
-  type LanguageModel,
   type UIMessage,
 } from "ai";
 import { z } from "zod";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
+import {
+  findBillContentByDifficulty,
+  findPublishedBillById,
+} from "@/features/bills/server/repositories/bill-repository";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import {
   SUGGEST_INTERVIEW_TOOL_NAME,
   SUGGEST_INTERVIEW_TOOL_TYPE,
 } from "@/features/chat/shared/constants";
 import { ChatError, ChatErrorCode } from "@/features/chat/shared/types/errors";
+import { pickChatKnowledgeSource } from "@/features/chat/shared/utils/pick-chat-knowledge-source";
 import { findPublicInterviewConfigByBillId } from "@/features/interview-config/server/repositories/interview-config-repository";
+import { AI_MODELS } from "@/lib/ai/models";
 import { env } from "@/lib/env";
 import {
   type CompiledPrompt,
   createPromptProvider,
   type PromptProvider,
 } from "@/lib/prompt";
-import { AI_MODELS } from "@/lib/ai/models";
 import { isWithinDailyCostLimit, recordChatUsage } from "./cost-tracker";
 import {
   checkSystemDailyCostLimit,
@@ -95,7 +100,7 @@ export async function handleChatRequest({
     promptProvider
   );
   // Model configuration
-  const model = deps?.model ?? AI_MODELS.gpt4o;
+  const model = deps?.model ?? AI_MODELS.gpt5_4_mini_fast;
   const modelName =
     typeof model === "string" ? model : (model.modelId ?? "unknown");
 
@@ -189,15 +194,30 @@ async function buildPrompt(
       : `bill-chat-system-${context.difficultyLevel}`;
 
   // Prepare prompt variables
-  const variables: Record<string, string> =
-    context.pageContext?.type === "home"
-      ? { billSummary: JSON.stringify(context.pageContext.bills ?? "") }
-      : {
-          billName: context.billContext?.name ?? "",
-          billTitle: context.billContext?.bill_content?.title ?? "",
-          billSummary: context.billContext?.bill_content?.summary ?? "",
-          billContent: context.billContext?.bill_content?.content ?? "",
-        };
+  // bill 関連の変数はクライアント側のメタデータを信頼せず、必ずサーバー側で再取得した
+  // 公開済みデータのみから組み立てる（管理画面トグルの強制と非公開ナレッジ流出防止）。
+  // 公開済み bill が引けない場合は bill コンテキスト自体を空にする。
+  let variables: Record<string, string>;
+  if (context.pageContext?.type === "home") {
+    variables = {
+      billSummary: JSON.stringify(context.pageContext.bills ?? ""),
+    };
+  } else {
+    const billId = context.billContext?.id;
+    const [serverBill, serverContent] = billId
+      ? await Promise.all([
+          findPublishedBillById(billId),
+          findBillContentByDifficulty(billId, context.difficultyLevel),
+        ])
+      : [null, null];
+    variables = {
+      billName: serverBill?.name ?? "",
+      billTitle: serverContent?.title ?? "",
+      billSummary: serverContent?.summary ?? "",
+      billContent: serverContent?.content ?? "",
+      knowledgeSource: pickChatKnowledgeSource(serverBill),
+    };
+  }
 
   // Fetch prompt from Langfuse
   try {

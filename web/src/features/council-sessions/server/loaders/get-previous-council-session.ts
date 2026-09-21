@@ -1,8 +1,8 @@
 import { unstable_cache } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { CouncilSession } from "../../shared/types";
-import { getActiveCouncilSession } from "./get-active-council-session";
 import { findPreviousCouncilSession } from "../repositories/council-session-repository";
+import { getActiveCouncilSession } from "./get-active-council-session";
 
 /**
  * 前回の定例会を取得

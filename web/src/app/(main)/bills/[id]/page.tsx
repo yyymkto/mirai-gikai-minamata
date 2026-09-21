@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
-import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
 import { BillDetailLayout } from "@/features/bills/server/components/bill-detail/bill-detail-layout";
+import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
 import { env } from "@/lib/env";
 import { routes } from "@/lib/routes";
 
@@ -43,7 +43,7 @@ export async function generateMetadata({
       title: bill.name,
       description: description,
       type: "article",
-      publishedTime: bill.published_at ?? undefined,
+      publishedTime: bill.submitted_date ?? undefined,
       modifiedTime: bill.updated_at,
       images: [
         {

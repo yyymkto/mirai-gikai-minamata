@@ -14,6 +14,7 @@ const navigationLinks = [
   { href: routes.committees(), label: "委員会管理" },
   { href: routes.interviews(), label: "インタビュー" },
   { href: routes.aiCollection(), label: "AI情報収集" },
+  // 全議案トピック分析(/user-topic-analysis)は隠し機能のためヘッダーに出さない（URL直アクセスのみ）。
   { href: routes.experts(), label: "有識者" },
   { href: routes.admins(), label: "管理者" },
   { href: routes.aiSettings(), label: "AI管理" },

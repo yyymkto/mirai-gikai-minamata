@@ -1,8 +1,13 @@
 import "server-only";
 
 import {
-  findPublicReportWithSessionById,
+  getBillIdFromPublicReportSession,
+  selectPrimaryBillContent,
+} from "../../shared/utils/public-report-display";
+import {
+  countPublicReportsByBillId,
   findBillWithContentById,
+  findPublicReportWithSessionById,
 } from "../repositories/interview-report-repository";
 
 export interface ReportOgData {
@@ -22,6 +27,9 @@ export async function getReportOgData(
   } catch {
     return null;
   }
+  if (!report) {
+    return null;
+  }
 
   const session = report.interview_sessions as {
     started_at: string;
@@ -30,15 +38,23 @@ export async function getReportOgData(
   } | null;
 
   let billName = "";
-  if (session?.interview_configs) {
-    const bill = await findBillWithContentById(
-      session.interview_configs.bill_id
-    );
-    const billContent = bill.bill_contents
-      ? Array.isArray(bill.bill_contents)
-        ? bill.bill_contents[0]
-        : bill.bill_contents
-      : null;
+  const billId = getBillIdFromPublicReportSession(session);
+  if (billId) {
+    let publicReportCount: number;
+    try {
+      publicReportCount = await countPublicReportsByBillId(billId);
+    } catch (error) {
+      console.error("Failed to count public reports for OGP:", error);
+      return null;
+    }
+    let bill: Awaited<ReturnType<typeof findBillWithContentById>>;
+    try {
+      bill = await findBillWithContentById(billId);
+    } catch (error) {
+      console.error("Failed to fetch bill for OGP:", error);
+      return null;
+    }
+    const billContent = selectPrimaryBillContent(bill.bill_contents);
     billName = billContent?.title || bill.name;
   }
 

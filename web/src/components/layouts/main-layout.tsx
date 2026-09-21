@@ -18,10 +18,13 @@ export function MainLayout({ children }: MainLayoutProps) {
   return (
     <div
       className={cn(
+        // モバイルは余白なし（ヒーロー/サムネイルを画面最上部に表示）、md以上で固定
+        // ヘッダー分の上余白を確保する。パンくずを持つページは各ページ側で
+        // モバイル時の上余白（pt-24 md:pt-0）を付与してヘッダー埋もれを回避する。
         "relative max-w-[700px] mx-auto md:mt-24",
         // インタビューページ以外ではshadowを表示
         !isInterview && "sm:shadow-lg",
-        // TOPページと法案詳細ページのみ、チャットサイドバー用のオフセット
+        // TOP・法案一覧・法案詳細のみ、チャットサイドバー用のオフセット
         useSidebarLayout && "pc:mr-[500px] xl:ml-[calc(calc(100vw-1180px)/2)]"
       )}
     >

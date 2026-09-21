@@ -1,16 +1,16 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   PromptInput,
   PromptInputBody,
+  PromptInputButton,
+  PromptInputError,
+  PromptInputHint,
+  PromptInputSubmit,
   PromptInputTextarea,
   PromptInputToolbar,
   PromptInputTools,
-  PromptInputSubmit,
-  PromptInputError,
-  PromptInputHint,
-  PromptInputButton,
 } from "./prompt-input";
 
 // nanoid をモックして安定した ID を返す
@@ -263,6 +263,62 @@ describe("PromptInputTextarea キーボードショートカット", () => {
     textarea.dispatchEvent(event);
 
     expect(requestSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it("submitOnEnter=true: compositionend直後のEnter（Safari二重発火）では送信されない", () => {
+    const onSubmit = vi.fn();
+    render(
+      <PromptInput onSubmit={onSubmit}>
+        <PromptInputBody>
+          <PromptInputTextarea submitOnEnter={true} />
+        </PromptInputBody>
+      </PromptInput>
+    );
+
+    const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+    const form = textarea.closest("form") as HTMLFormElement;
+    const requestSubmitSpy = vi.fn();
+    form.requestSubmit = requestSubmitSpy;
+
+    // Safari は IME 変換確定時に compositionend → 余分な keydown(Enter) を発火する
+    fireEvent.compositionEnd(textarea, { data: "テスト" });
+    fireEvent.keyDown(textarea, {
+      key: "Enter",
+      code: "Enter",
+    });
+
+    expect(requestSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it("submitOnEnter=true: compositionend後しばらく経ったEnterは送信される", () => {
+    vi.useFakeTimers();
+    try {
+      const onSubmit = vi.fn();
+      render(
+        <PromptInput onSubmit={onSubmit}>
+          <PromptInputBody>
+            <PromptInputTextarea submitOnEnter={true} />
+          </PromptInputBody>
+        </PromptInput>
+      );
+
+      const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+      const form = textarea.closest("form") as HTMLFormElement;
+      const requestSubmitSpy = vi.fn();
+      form.requestSubmit = requestSubmitSpy;
+
+      fireEvent.compositionEnd(textarea, { data: "テスト" });
+      // ガード時間を超えて経過させる
+      vi.advanceTimersByTime(500);
+      fireEvent.keyDown(textarea, {
+        key: "Enter",
+        code: "Enter",
+      });
+
+      expect(requestSubmitSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

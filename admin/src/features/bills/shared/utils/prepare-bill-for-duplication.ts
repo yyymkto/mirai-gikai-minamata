@@ -11,14 +11,17 @@ export function prepareBillForDuplication(originalBill: Bill): BillInsert {
     updated_at: ___,
     status_order: ____,
     publish_status_order: _____,
+    slug: ______,
     ...billWithoutId
   } = originalBill;
 
   return {
     ...billWithoutId,
+    slug: null,
     name: `${originalBill.name} (複製)`,
     publish_status: "draft",
     bill_number: "",
+    is_review_completed: false,
   };
 }
 

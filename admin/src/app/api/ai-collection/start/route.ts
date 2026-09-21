@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { buildPrompt } from "@/features/ai-collection/server/utils/build-prompt";
 import { getExistingBillNumbers } from "@/features/ai-collection/server/loaders/get-existing-bill-names";
+import { collectWithOpenAi } from "@/features/ai-collection/server/services/collect-with-openai";
+import { buildPrompt } from "@/features/ai-collection/server/utils/build-prompt";
 import {
   ClaudeUsageLimitError,
   cleanupTempFile,
@@ -8,9 +9,6 @@ import {
   getTempOutputPath,
   readCollectionOutput,
 } from "@/features/ai-collection/server/utils/execute-claude";
-import { collectWithOpenAi } from "@/features/ai-collection/server/services/collect-with-openai";
-import { getAiModel } from "@/features/ai-settings/server/loaders/get-ai-model";
-import { isClaudeCliModel } from "@/features/ai-settings/shared/ai-model-options";
 import {
   loadRun,
   saveRun,
@@ -20,6 +18,8 @@ import type {
   DraftBill,
   DraftFactionStance,
 } from "@/features/ai-collection/shared/types";
+import { getAiModel } from "@/features/ai-settings/server/loaders/get-ai-model";
+import { isClaudeCliModel } from "@/features/ai-settings/shared/ai-model-options";
 
 export async function POST(request: Request) {
   try {

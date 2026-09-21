@@ -30,7 +30,7 @@ export async function findBillsWithCouncilSessions(
     ascending,
   };
 
-  if (field === "published_at") {
+  if (field === "submitted_date") {
     orderOptions.nullsFirst = false;
   }
 

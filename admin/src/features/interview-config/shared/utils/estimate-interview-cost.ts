@@ -29,15 +29,25 @@ const MODEL_PRICING: Record<string, ModelPricing> = {
   "openai/gpt-5.1-instant": { inputPerMillion: 1.25, outputPerMillion: 10 },
   "openai/gpt-5.1-thinking": { inputPerMillion: 1.25, outputPerMillion: 10 },
   "openai/gpt-5.2": { inputPerMillion: 1.75, outputPerMillion: 14 },
+  "openai/gpt-5.6-sol": { inputPerMillion: 5, outputPerMillion: 30 },
+  "openai/gpt-5.6-terra": { inputPerMillion: 2.5, outputPerMillion: 15 },
+  "openai/gpt-5.6-luna": { inputPerMillion: 1, outputPerMillion: 6 },
   // --- Google ---
   "google/gemini-3-flash": { inputPerMillion: 0.5, outputPerMillion: 3 },
   "google/gemini-3.1-pro-preview": {
     inputPerMillion: 2,
     outputPerMillion: 12,
   },
+  // 2026-12-31 までの導入価格。期限後に見直すこと。
+  "google/gemini-3.8-flash": { inputPerMillion: 0.75, outputPerMillion: 3.75 },
+  "google/gemma-4-26b-a4b-it": {
+    inputPerMillion: 0.06,
+    outputPerMillion: 0.33,
+  },
   // --- Anthropic ---
   "anthropic/claude-haiku-4.5": { inputPerMillion: 1, outputPerMillion: 5 },
   "anthropic/claude-sonnet-4.6": { inputPerMillion: 3, outputPerMillion: 15 },
+  "anthropic/claude-sonnet-5": { inputPerMillion: 3, outputPerMillion: 15 },
   "anthropic/claude-opus-4.6": { inputPerMillion: 5, outputPerMillion: 25 },
 };
 

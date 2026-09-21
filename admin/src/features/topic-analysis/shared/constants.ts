@@ -10,7 +10,7 @@ export const TOPIC_ANALYSIS_MAX_CONCURRENCY = 100;
 export const TOPIC_ANALYSIS_MAX_REPRESENTATIVES = 5;
 
 /** トピック解析で使用するモデル（フォールバック値） */
-export const TOPIC_ANALYSIS_MODEL = AI_MODELS.gemini3_flash_preview;
+export const TOPIC_ANALYSIS_MODEL = AI_MODELS.gemini3_8_flash;
 
 /** トピック解析で使用するモデルの機能ID */
 export const TOPIC_ANALYSIS_FEATURE_ID = "topic-analysis";

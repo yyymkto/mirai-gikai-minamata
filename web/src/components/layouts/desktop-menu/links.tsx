@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
+import { EXTERNAL_LINKS } from "@/config/external-links";
 import { siteConfig } from "@/config/site.config";
 import { routes } from "@/lib/routes";
 
@@ -31,8 +32,13 @@ const links: FooterLinkItem[] = [
   },
   {
     label: "よくあるご質問",
-    href: "/faq",
+    href: routes.faq(),
     external: false,
+  },
+  {
+    label: "自主制作ガイドライン",
+    href: EXTERNAL_LINKS.FORK_GUIDELINES_NOTE,
+    external: true,
   },
 ];
 

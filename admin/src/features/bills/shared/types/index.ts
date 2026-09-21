@@ -21,7 +21,7 @@ import type { SortConfig } from "@/lib/sort";
 // ソート関連の型定義
 export type BillSortField =
   | "created_at"
-  | "published_at"
+  | "submitted_date"
   | "status_order"
   | "publish_status_order"
   | "bill_number"
@@ -30,7 +30,7 @@ export type BillSortField =
 
 export const BILL_SORT_FIELDS: readonly BillSortField[] = [
   "created_at",
-  "published_at",
+  "submitted_date",
   "status_order",
   "publish_status_order",
   "bill_number",

@@ -1,36 +1,148 @@
+import { Container } from "@/components/layouts/container";
+import { Progress } from "@/components/ui/progress";
 import { formatDateWithDots } from "@/lib/utils/date";
 import type { CouncilSession } from "../../shared/types";
+import { calculateSessionProgress } from "../../shared/utils/session-progress";
 
 type CurrentCouncilSessionProps = {
   session: CouncilSession | null;
+  /** 直近で閉会した定例会。閉会中に「終了しました」を出すために使う。 */
+  closedSession: CouncilSession | null;
+  /** 進行率の基準時刻。呼び出し側が日本時刻を渡す。 */
+  now: Date;
 };
 
-export function CurrentCouncilSession({ session }: CurrentCouncilSessionProps) {
+/**
+ * 定例会の状況カード。
+ *
+ * 開会中は進行バーと残り日数を出す。パーセンテージだけだと寄付の目標額のように
+ * 読まれるため、開会日と閉会予定日を併記する。閉会日が未定のときはバーを出さない。
+ * 閉会中はバーを出さず、どの定例会が終わったのかをテキストで示す。
+ */
+export function CurrentCouncilSession({
+  session,
+  closedSession,
+  now,
+}: CurrentCouncilSessionProps) {
+  const inSession = session !== null;
+
+  // ヒーローを外したのでこのカードが最上部に来る。ヘッダーは fixed で
+  // main-layout の上余白は md 以上にしか効かないため、モバイルでは
+  // ここで余白を確保する（パンくずを持つページと同じ規約）。
   return (
-    <div className="w-full bg-mirai-surface-warm px-6 py-6">
-      <div className="flex items-center gap-5">
-        <div className="flex items-center gap-4 flex-1">
-          <h2 className="text-xl font-bold text-gray-800 leading-[0.9]">
-            本日は
-          </h2>
-          <div
-            className={`
-            inline-flex items-center justify-center px-5 py-1.5 rounded-[50px]  shrink-0
-            ${session == null ? "bg-mirai-border-muted" : "bg-mirai-gradient"}
-            `}
+    <Container className="pt-24 md:pt-5">
+      <div className="flex flex-col gap-6 rounded-2xl bg-mirai-light-gradient px-5 py-5">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+          <span
+            className={`h-2 w-2 shrink-0 rounded-full ${
+              inSession ? "bg-mirai-brand-teal" : "bg-mirai-border-light"
+            }`}
+            aria-hidden
+          />
+          <span className="whitespace-nowrap text-xl font-bold">本日は</span>
+          {/* 開会中は状態そのものを目立たせ、閉会中は落ち着かせる。 */}
+          <span
+            className={`rounded-full px-3.5 py-1 text-[15px] font-bold ${
+              inSession
+                ? "bg-mirai-gradient text-mirai-text"
+                : "bg-mirai-surface-muted text-mirai-text-secondary"
+            }`}
           >
-            <span className="text-base font-bold leading-[1.48]">
-              {session == null ? "閉会中" : "開会中"}
+            {inSession ? "定例会開会中" : "閉会中"}
+          </span>
+          {inSession && (
+            <span className="text-[15px] font-bold text-mirai-brand-teal-deep md:ml-auto">
+              {session.name}
             </span>
-          </div>
+          )}
         </div>
-        {session != null && (
-          <div className="text-sm leading-[1.5] shrink-0">
-            <div>{session.name}</div>
-            <div>{formatDateWithDots(session.start_date)}〜</div>
-          </div>
+
+        {inSession && <SessionProgressBar session={session} now={now} />}
+        {!inSession && closedSession && (
+          <ClosedSessionSummary session={closedSession} />
         )}
       </div>
+    </Container>
+  );
+}
+
+function SessionProgressBar({
+  session,
+  now,
+}: {
+  session: CouncilSession;
+  now: Date;
+}) {
+  const progress = calculateSessionProgress(session, now);
+
+  // 閉会日が未定のときは進行率を出せないので、開会日だけを示す。
+  if (progress === null) {
+    return (
+      <div className="-mt-1.5 text-xs font-bold text-mirai-text-secondary">
+        {formatDateWithDots(session.start_date)} 開会
+      </div>
+    );
+  }
+
+  return (
+    <div className="-mt-1.5 flex flex-col gap-2">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="text-[13px] font-bold text-mirai-text-secondary">
+          会期の進行
+        </span>
+        <span className="flex items-baseline gap-1 whitespace-nowrap">
+          <span className="text-[13px] font-bold text-mirai-text-secondary">
+            閉会まで
+          </span>
+          {/* 残り日数だけ色を変える。会期の進行のうち一番見たい数字。 */}
+          <span className="font-lexend text-[28px] font-bold leading-none text-primary-accent">
+            {progress.daysLeft}
+          </span>
+          <span className="text-[13px] font-bold text-primary-accent">日</span>
+        </span>
+      </div>
+
+      {/*
+        残り日数は上の行に文字で出しているので、バー自体は割合だけを伝える。
+      */}
+      <Progress
+        value={progress.percentage}
+        aria-label="会期の進行"
+        className="h-2.5 bg-white/75 [&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-primary-accent [&>[data-slot=progress-indicator]]:to-mirai-gradient-start"
+      />
+
+      {/* パーセンテージ単独だと目標額のように読まれるので、日付を両端に置く。 */}
+      <div className="flex items-baseline justify-between gap-2 text-xs font-bold text-mirai-text-secondary">
+        <span className="whitespace-nowrap">
+          {formatDateWithDots(session.start_date)} 開会
+        </span>
+        {session.end_date && (
+          <span className="whitespace-nowrap">
+            {formatDateWithDots(session.end_date)} 閉会予定
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ClosedSessionSummary({ session }: { session: CouncilSession }) {
+  return (
+    <div className="-mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+      <span className="text-[15px] font-bold text-mirai-brand-teal-deep">
+        {session.name}は終了しました
+      </span>
+      {/*
+        区切りの記号は置かない。折り返すと行頭に残って意味を持たない記号に
+        なる。折り返すかは画面幅ではなく定例会名の長さで決まるので、
+        ブレークポイントで出し分けても防げない。間隔で区切りを表す。
+      */}
+      {session.end_date && (
+        <span className="whitespace-nowrap text-[13px] font-bold text-mirai-text-secondary">
+          {formatDateWithDots(session.start_date)} -{" "}
+          {formatDateWithDots(session.end_date)}
+        </span>
+      )}
     </div>
   );
 }

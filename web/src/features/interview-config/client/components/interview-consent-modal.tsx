@@ -6,13 +6,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site.config";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { siteConfig } from "@/config/site.config";
 import { getInterviewChatLink } from "@/features/interview-config/shared/utils/interview-links";
 import { routes } from "@/lib/routes";
 

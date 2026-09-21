@@ -2,13 +2,13 @@
 
 import "server-only";
 
-import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 import { createAdminClient } from "@mirai-gikai/supabase";
+import OpenAI from "openai";
 import { getAiModel } from "@/features/ai-settings/server/loaders/get-ai-model";
 import { requireAdmin } from "@/features/auth/server/lib/auth-server";
-import { findBillContentsByBillId } from "../repositories/bill-edit-repository";
 import { buildThumbnailPrompt } from "../../shared/utils/build-thumbnail-prompt";
+import { findBillContentsByBillId } from "../repositories/bill-edit-repository";
 
 export type GenerateThumbnailResult =
   | { success: true; thumbnailUrl: string }

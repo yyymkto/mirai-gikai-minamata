@@ -12,4 +12,6 @@ export const EXTERNAL_LINKS = {
   TERMS: siteConfig.externalLinks.terms,
   PRIVACY: siteConfig.externalLinks.privacy,
   FAQ: siteConfig.externalLinks.faq,
+  FORK_GUIDELINES_NOTE: siteConfig.externalLinks.forkGuidelinesNote,
+  GITHUB_REPO: siteConfig.externalLinks.githubRepo,
 } as const;
