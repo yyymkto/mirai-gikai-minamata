@@ -88,6 +88,7 @@ export const MINAMATA_FACTIONS: readonly FactionEntry[] = [
     reading: "じみんしんみらい",
   }),
   faction("faction-is-minamata", "Ｉ❜ｓ水俣", {
+    reading: "あいずみなまた",
     knownVariants: [
       {
         text: "I❜s水俣",
