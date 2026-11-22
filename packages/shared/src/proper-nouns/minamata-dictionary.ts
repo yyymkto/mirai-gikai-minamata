@@ -56,6 +56,7 @@ const TAKA_VARIANT_NOTE =
 
 // ---------------------------------------------------------------------------
 // 会派（令和8年7月2日現在）
+// 読みは運営者に確認した（2026-11-22）。確認していない会派は null。
 // ---------------------------------------------------------------------------
 
 function faction(
@@ -82,8 +83,10 @@ function faction(
 }
 
 export const MINAMATA_FACTIONS: readonly FactionEntry[] = [
-  faction("faction-shinshikai", "真志会"),
-  faction("faction-jimin-shinmirai", "自民新未来"),
+  faction("faction-shinshikai", "真志会", { reading: "しんしかい" }),
+  faction("faction-jimin-shinmirai", "自民新未来", {
+    reading: "じみんしんみらい",
+  }),
   faction("faction-is-minamata", "Ｉ❜ｓ水俣", {
     knownVariants: [
       {
@@ -99,12 +102,14 @@ export const MINAMATA_FACTIONS: readonly FactionEntry[] = [
     ],
   }),
   faction("faction-jcp", "日本共産党", { aliases: ["共産党"] }),
-  faction("faction-koseikai", "光政会"),
+  faction("faction-koseikai", "光政会", { reading: "こうせいかい" }),
   faction("faction-komei", "公明党"),
-  faction("faction-kodomo-miraikai", "こども未来会"),
-  faction("faction-sanseikai", "参政会"),
+  faction("faction-kodomo-miraikai", "こども未来会", {
+    reading: "こどもみらいかい",
+  }),
+  faction("faction-sanseikai", "参政会", { reading: "さんせいかい" }),
   faction("faction-next-smile", "ネクストすまいる"),
-  faction("faction-keishinkai", "恵真会"),
+  faction("faction-keishinkai", "恵真会", { reading: "けいしんかい" }),
 ];
 
 // ---------------------------------------------------------------------------

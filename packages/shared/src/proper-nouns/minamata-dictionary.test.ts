@@ -102,6 +102,12 @@ describe("議員", () => {
 });
 
 describe("会派", () => {
+  it("読みがある会派は、ひらがなだけで書かれている", () => {
+    for (const f of MINAMATA_FACTIONS) {
+      if (f.reading !== null) expect(f.reading).toMatch(/^[ぁ-ゖー]+$/);
+    }
+  });
+
   it("議員の所属会派がすべて辞書にある", () => {
     const factionIds = new Set(MINAMATA_FACTIONS.map((f) => f.id));
     for (const m of MINAMATA_MEMBERS) {
