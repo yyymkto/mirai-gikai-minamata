@@ -111,6 +111,18 @@
     "./interview-report/sync-opinions": {
       "types": "./src/interview-report/sync-opinions.ts",
       "default": "./src/interview-report/sync-opinions.ts"
+    },
+    "./proper-nouns/types": {
+      "types": "./src/proper-nouns/types.ts",
+      "default": "./src/proper-nouns/types.ts"
+    },
+    "./proper-nouns/active-entries": {
+      "types": "./src/proper-nouns/active-entries.ts",
+      "default": "./src/proper-nouns/active-entries.ts"
+    },
+    "./proper-nouns/minamata-dictionary": {
+      "types": "./src/proper-nouns/minamata-dictionary.ts",
+      "default": "./src/proper-nouns/minamata-dictionary.ts"
     }
   },
   "dependencies": {
